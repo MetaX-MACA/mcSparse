@@ -1,0 +1,152 @@
+#ifndef COMMON_MCSPARSE_HELPER_H_
+#define COMMON_MCSPARSE_HELPER_H_
+
+#include <@MCSP_PLATFORM@/@MCSP_PLATFORM_RUNTIME_H@>
+
+#include "common/mcsp_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+mcsparseStatus_t mcsparseCreate(mcsparseHandle_t* handle);
+mcsparseStatus_t mcsparseDestroy(mcsparseHandle_t handle);
+
+mcsparseStatus_t mcsparseGetVersion(mcsparseHandle_t handle, int* version);
+mcsparseStatus_t mcsparseGetProperty(libraryPropertyType type, int* value);
+
+const char* mcsparseGetErrorName(mcsparseStatus_t status);
+const char* mcsparseGetErrorString(mcsparseStatus_t status);
+
+mcsparseStatus_t mcsparseSetStream(mcsparseHandle_t handle, @MCSP_PLATFORM_STREAM_T@ sid);
+mcsparseStatus_t mcsparseGetStream(const mcsparseHandle_t handle, @MCSP_PLATFORM_STREAM_T@* sid);
+
+mcsparseStatus_t mcsparseCreateMatDescr(mcsparseMatDescr_t* descr);
+mcsparseStatus_t mcsparseDestroyMatDescr(mcsparseMatDescr_t descr);
+mcsparseStatus_t mcsparseCopyMatDescr(mcsparseMatDescr_t dest, const mcsparseMatDescr_t src);
+
+mcsparseStatus_t mcsparseSetPointerMode(mcsparseHandle_t handle, mcsparsePointerMode_t pointer_mode);
+mcsparseStatus_t mcsparseGetPointerMode(const mcsparseHandle_t handle, mcsparsePointerMode_t* pointer_mode);
+
+mcsparseStatus_t mcsparseSetMatIndexBase(mcsparseMatDescr_t descr, mcsparseIndexBase_t index_base);
+mcsparseIndexBase_t mcsparseGetMatIndexBase(const mcsparseMatDescr_t descr);
+
+mcsparseStatus_t mcsparseSetMatType(mcsparseMatDescr_t descr, mcsparseMatrixType_t matrix_type);
+mcsparseMatrixType_t mcsparseGetMatType(const mcsparseMatDescr_t descr);
+
+mcsparseStatus_t mcsparseSetMatFillMode(mcsparseMatDescr_t descr, mcsparseFillMode_t mode);
+mcsparseFillMode_t mcsparseGetMatFillMode(const mcsparseMatDescr_t descr);
+
+mcsparseStatus_t mcsparseSetMatDiagType(mcsparseMatDescr_t descr, mcsparseDiagType_t diag_type);
+mcsparseDiagType_t mcsparseGetMatDiagType(const mcsparseMatDescr_t descr);
+
+mcsparseStatus_t mcsparseSetStorageMode(mcsparseMatDescr_t descr, mcsparseStorageMode_t storage_mode);
+mcsparseStatus_t mcsparseGetStorageMode(const mcsparseMatDescr_t descr, mcsparseStorageMode_t* storage_mode);
+
+mcsparseStatus_t mcsparseCreateDnVec(mcsparseDnVecDescr_t* dnVecDescr, int64_t size, void* values, macaDataType valueType);
+mcsparseStatus_t mcsparseDestroyDnVec(mcsparseDnVecDescr_t dnVecDescr);
+mcsparseStatus_t mcsparseDnVecGet(mcsparseDnVecDescr_t dnVecDescr, int64_t* size, void** values, macaDataType* valueType);
+mcsparseStatus_t mcsparseDnVecGetValues(mcsparseDnVecDescr_t dnVecDescr, void** values);
+mcsparseStatus_t mcsparseDnVecSetValues(mcsparseDnVecDescr_t dnVecDescr, void* values);
+
+mcsparseStatus_t mcsparseCreateCoo(mcsparseSpMatDescr_t* spMatDescr, int64_t rows, int64_t cols, int64_t nnz, void* cooRowInd,
+                           void* cooColInd, void* cooValues, mcsparseIndexType_t cooIdxType, mcsparseIndexBase_t idxBase,
+                           macaDataType valueType);
+mcsparseStatus_t mcsparseCooGet(mcsparseSpMatDescr_t spMatDescr, int64_t* rows, int64_t* cols, int64_t* nnz,
+                        void** cooRowInd, void** cooColInd, void** cooValues,
+                        mcsparseIndexType_t* idxType, mcsparseIndexBase_t* idxBase, macaDataType* valueType);
+mcsparseStatus_t mcsparseCooSetPointers(mcsparseSpMatDescr_t spMatDescr, void* cooRows, void* cooColumns, void* cooValues);
+
+mcsparseStatus_t mcsparseCreateCsr(mcsparseSpMatDescr_t* spMatDescr, int64_t rows, int64_t cols, int64_t nnz, void* csrRowOffsets,
+                           void* csrColInd, void* csrValues, mcsparseIndexType_t csrRowOffsetsType,
+                           mcsparseIndexType_t csrColIndType, mcsparseIndexBase_t idxBase, macaDataType valueType);
+mcsparseStatus_t mcsparseCsrGet(mcsparseSpMatDescr_t spMatDescr, int64_t* rows, int64_t* cols, int64_t* nnz, void** csrRowOffsets,
+                        void** csrColInd, void** csrValues, mcsparseIndexType_t* csrRowOffsetsType,
+                        mcsparseIndexType_t* csrColIndType, mcsparseIndexBase_t* idxBase, macaDataType* valueType);
+mcsparseStatus_t mcsparseCsrSetPointers(mcsparseSpMatDescr_t spMatDescr, void* csrRowOffsets, void* csrColInd, void* csrValues);
+
+
+mcsparseStatus_t mcsparseCreateCsc(mcsparseSpMatDescr_t* spMatDescr, int64_t rows, int64_t cols, int64_t nnz, void* cscColOffsets,
+                           void* cscRowInd, void* cscValues, mcsparseIndexType_t cscColOffsetsType,
+                           mcsparseIndexType_t cscRowIndType, mcsparseIndexBase_t idxBase, macaDataType valueType);
+mcsparseStatus_t mcsparseCscSetPointers(mcsparseSpMatDescr_t spMatDescr, void* cscColOffsets, void* cscRowInd, void* cscValues);
+
+mcsparseStatus_t mcsparseCreateBlockedEll(mcsparseSpMatDescr_t *spMatDescr, int64_t rows, int64_t cols, int64_t ellBlockSize,
+                                        int64_t ellCols, void *ellColInd, void *ellValue, mcsparseIndexType_t ellIdxType,
+                                        mcsparseIndexBase_t idxBase, macaDataType valueType);
+mcsparseStatus_t mcsparseBlockedEllGet(mcsparseSpMatDescr_t spMatDescr, int64_t *rowNum, int64_t *colNum, int64_t *ellBlockSize,
+                                        int64_t *ellCols, void **ellColInd, void **ellValue, mcsparseIndexType_t *ellIdxType,
+                                        mcsparseIndexBase_t *idxBase, macaDataType *valueType);
+
+mcsparseStatus_t mcsparseDestroySpMat(mcsparseSpMatDescr_t spMatDescr);
+mcsparseStatus_t mcsparseSpMatGetSize(mcsparseSpMatDescr_t spMatDescr, int64_t* rows, int64_t* cols, int64_t* nnz);
+mcsparseStatus_t mcsparseSpMatGetFormat(mcsparseSpMatDescr_t spMatDescr, mcsparseFormat_t* format);
+mcsparseStatus_t mcsparseSpMatGetIndexBase(mcsparseSpMatDescr_t spMatDescr, mcsparseIndexBase_t* idxBase);
+mcsparseStatus_t mcsparseSpMatGetValues(mcsparseSpMatDescr_t spMatDescr, void** values);
+mcsparseStatus_t mcsparseSpMatSetValues(mcsparseSpMatDescr_t spMatDescr, void* values);
+mcsparseStatus_t mcsparseSpMatGetAttribute(mcsparseSpMatDescr_t spMatDescr, mcsparseSpMatAttribute_t attribute, void* data,
+                                   size_t dataSize);
+mcsparseStatus_t mcsparseSpMatSetAttribute(mcsparseSpMatDescr_t spMatDescr, mcsparseSpMatAttribute_t attribute, const void* data,
+                                   size_t dataSize);
+
+mcsparseStatus_t mcsparseCreateDnMat(mcsparseDnMatDescr_t* dnMatDescr, int64_t rows, int64_t cols, int64_t ld, void* values,
+                             macaDataType valueType, mcsparseOrder_t order);
+mcsparseStatus_t mcsparseDestroyDnMat(mcsparseDnMatDescr_t dnMatDescr);
+mcsparseStatus_t mcsparseDnMatGet(mcsparseDnMatDescr_t dnMatDescr, int64_t* rows, int64_t* cols, int64_t* ld, void** values,
+                          macaDataType* type, mcsparseOrder_t* order);
+mcsparseStatus_t mcsparseDnMatGetValues(mcsparseDnMatDescr_t dnMatDescr, void** values);
+mcsparseStatus_t mcsparseDnMatSetValues(mcsparseDnMatDescr_t dnMatDescr, void* values);
+
+mcsparseStatus_t mcsparseCreateCsrsv2Info(mcsparseCsrsv2Info_t* info);
+mcsparseStatus_t mcsparseDestroyCsrsv2Info(mcsparseCsrsv2Info_t info);
+
+mcsparseStatus_t mcsparseCreateCsrsm2Info(mcsparseCsrsm2Info_t* info);
+mcsparseStatus_t mcsparseDestroyCsrsm2Info(mcsparseCsrsm2Info_t info);
+
+mcsparseStatus_t mcsparseCreateSpVec(mcsparseSpVecDescr_t* spVecDescr, int64_t size, int64_t nnz, void* indices, void* values,
+                             mcsparseIndexType_t idxType, mcsparseIndexBase_t idxBase, macaDataType valueType);
+mcsparseStatus_t mcsparseDestroySpVec(mcsparseSpVecDescr_t spVecDescr);
+mcsparseStatus_t mcsparseSpVecGet(mcsparseSpVecDescr_t spVecDescr, int64_t* size, int64_t* nnz, void** indices, void** values,
+                          mcsparseIndexType_t* idxType, mcsparseIndexBase_t* idxBase, macaDataType* valueType);
+mcsparseStatus_t mcsparseSpVecGetIndexBase(mcsparseSpVecDescr_t spVecDescr, mcsparseIndexBase_t* idxBase);
+mcsparseStatus_t mcsparseSpVecGetValues(mcsparseSpVecDescr_t spVecDescr, void** values);
+mcsparseStatus_t mcsparseSpVecSetValues(mcsparseSpVecDescr_t spVecDescr, void* values);
+
+mcsparseStatus_t mcsparseCreateCsrilu02Info(mcsparseCsrilu02Info_t* info);
+mcsparseStatus_t mcsparseDestroyCsrilu02Info(mcsparseCsrilu02Info_t info);
+
+mcsparseStatus_t mcsparseCreateCsric02Info(mcsparseCsric02Info_t* info);
+mcsparseStatus_t mcsparseDestroyCsric02Info(mcsparseCsric02Info_t info);
+
+mcsparseStatus_t mcsparseCreateColorInfo(mcsparseColorInfo_t* info);
+mcsparseStatus_t mcsparseDestroyColorInfo(mcsparseColorInfo_t info);
+mcsparseStatus_t mcsparseSetColorAlgs(mcsparseColorInfo_t info, mcsparseColorAlg_t alg);
+mcsparseStatus_t mcsparseGetColorAlgs(mcsparseColorInfo_t info, mcsparseColorAlg_t* alg);
+
+mcsparseStatus_t mcsparseCreateCsrgemm2Info(mcsparseCsrgemm2Info_t* info);
+mcsparseStatus_t mcsparseDestroyCsrgemm2Info(mcsparseCsrgemm2Info_t info);
+
+mcsparseStatus_t mcsparseCreatePruneInfo(mcsparsePruneInfo_t *info);
+mcsparseStatus_t mcsparseDestroyPruneInfo(mcsparsePruneInfo_t info);
+
+mcsparseStatus_t mcsparseCreateCsru2csrInfo(mcsparseCsru2csrInfo_t* info);
+mcsparseStatus_t mcsparseDestroyCsru2csrInfo(mcsparseCsru2csrInfo_t info);
+
+mcsparseStatus_t mcsparseCreateBsrsv2Info(mcsparseBsrsv2Info_t* info);
+mcsparseStatus_t mcsparseDestroyBsrsv2Info(mcsparseBsrsv2Info_t info);
+
+mcsparseStatus_t mcsparseCreateBsrsm2Info(mcsparseBsrsm2Info_t* info);
+mcsparseStatus_t mcsparseDestroyBsrsm2Info(mcsparseBsrsm2Info_t info);
+
+
+mcsparseStatus_t mcsparseCreateBsrilu02Info(mcsparseBsrilu02Info_t* info);
+mcsparseStatus_t mcsparseDestroyBsrilu02Info(mcsparseBsrilu02Info_t info);
+
+mcsparseStatus_t mcsparseCreateBsric02Info(mcsparseBsric02Info_t* info);
+mcsparseStatus_t mcsparseDestroyBsric02Info(mcsparseBsric02Info_t info);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif  // INTERFACE_MCSPARSE_HELPER_H_
