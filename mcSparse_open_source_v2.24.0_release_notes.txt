@@ -1,0 +1,3 @@
+Release Notes
+Known issues and limitation
+1. Open Source Code verify 使用MACA SDK 2.24.0.12 自带mcSparse sample时，example_csc_sort会有随机fail问题

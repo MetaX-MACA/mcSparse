@@ -1,0 +1,256 @@
+#ifndef COMMON_MCSPARSE_TYPES_H_
+#define COMMON_MCSPARSE_TYPES_H_
+
+#include <stdint.h>
+
+@MACA_COMMON_DEFINE@
+#include "@MCSP_DATA_TYPE@"
+#include "@MCSP_COMPLEX_H@"
+#include "@MCSP_HALF_H@"
+#include "@MCSP_BFLOAT16_H@"
+
+typedef enum {
+    MCSPARSE_OPERATION_NON_TRANSPOSE = 0,
+    MCSPARSE_OPERATION_TRANSPOSE = 1,
+    MCSPARSE_OPERATION_CONJUGATE_TRANSPOSE = 2,
+} mcsparseOperation_t;
+
+typedef enum {
+    MCSPARSE_STATUS_SUCCESS                   = 0,
+    MCSPARSE_STATUS_NOT_INITIALIZED           = 1,
+    MCSPARSE_STATUS_ALLOC_FAILED              = 2,
+    MCSPARSE_STATUS_INVALID_VALUE             = 3,
+    MCSPARSE_STATUS_ARCH_MISMATCH             = 4,
+    MCSPARSE_STATUS_MAPPING_ERROR             = 5,
+    MCSPARSE_STATUS_EXECUTION_FAILED          = 6,
+    MCSPARSE_STATUS_INTERNAL_ERROR            = 7,
+    MCSPARSE_STATUS_MATRIX_TYPE_NOT_SUPPORTED = 8,
+    MCSPARSE_STATUS_ZERO_PIVOT                = 9,
+    MCSPARSE_STATUS_NOT_SUPPORTED             = 10,
+    MCSPARSE_STATUS_INSUFFICIENT_RESOURCES    = 11
+} mcsparseStatus_t;
+
+typedef enum {
+    MCSPARSE_MATRIX_TYPE_GENERAL = 0,
+    MCSPARSE_MATRIX_TYPE_SYMMETRIC = 1,
+    MCSPARSE_MATRIX_TYPE_HERMITIAN = 2,
+    MCSPARSE_MATRIX_TYPE_TRIANGULAR = 3
+} mcsparseMatrixType_t;
+
+typedef enum {
+    // mcsp index base enum, starting index of the matrix
+    MCSPARSE_INDEX_BASE_ZERO = 0,
+    MCSPARSE_INDEX_BASE_ONE = 1
+} mcsparseIndexBase_t;
+
+typedef enum {
+    MCSPARSE_STORAGE_MODE_SORTED = 0, /**< matrix is sorted. */
+    MCSPARSE_STORAGE_MODE_UNSORTED = 1 /**< matrix is unsorted. */
+} mcsparseStorageMode_t;
+
+typedef enum {
+    MCSPARSE_DIRECTION_ROW = 0,     ///< Row-Major Direction - Matrix should be compressed by rows
+    MCSPARSE_DIRECTION_COLUMN = 1   ///< Column-Major Direction - Matrix should be compressed by columns
+} mcsparseDirection_t;
+
+typedef enum {
+    // mcsp diag type enum
+    MCSPARSE_DIAG_TYPE_NON_UNIT = 0,
+    MCSPARSE_DIAG_TYPE_UNIT = 1
+} mcsparseDiagType_t;
+
+typedef enum {
+    MCSPARSE_FILL_MODE_LOWER = 0,
+    MCSPARSE_FILL_MODE_UPPER = 1,
+    MCSPARSE_FILL_MODE_FULL = 2,
+} mcsparseFillMode_t;
+
+typedef enum {
+    MCSPARSE_ANALYSIS_POLICY_AUTO = 0,
+    MCSPARSE_ANALYSIS_POLICY_REUSE = 1,
+    MCSPARSE_ANALYSIS_POLICY_FORCE = 2,
+} mcsparseAnalysisPolicy_t;
+
+typedef enum { MCSPARSE_SOLVE_POLICY_NO_LEVEL = 0, MCSPARSE_SOLVE_POLICY_USE_LEVEL = 1 } mcsparseSolvePolicy_t;
+
+typedef enum {
+    MCSPARSE_POINTER_MODE_HOST = 0,
+    MCSPARSE_POINTER_MODE_DEVICE = 1,
+} mcsparsePointerMode_t;
+
+typedef enum {
+    MCSPARSE_ACTION_SYMBOLIC = 0, /* Operate only on indices. */
+    MCSPARSE_ACTION_NUMERIC = 1,  /* Operate on data and indices. */
+} mcsparseAction_t;
+
+typedef enum {
+    MCSPARSE_COLOR_ALG0 = 0,  // default
+    MCSPARSE_COLOR_ALG1 = 1
+} mcsparseColorAlg_t;
+
+typedef enum {
+    MCSPARSE_ALG_MERGE_PATH  // merge path alias
+} mcsparseAlgMode_t;
+
+// #############################################################################
+// # GENERIC APIs - Enumerators and Opaque Data Structures
+// #############################################################################
+
+typedef enum {
+    MCSPARSE_FORMAT_CSR = 1,          ///< Compressed Sparse Row (CSR)
+    MCSPARSE_FORMAT_CSC = 2,          ///< Compressed Sparse Column (CSC)
+    MCSPARSE_FORMAT_COO = 3,          ///< Coordinate (COO) - Structure of Arrays
+    MCSPARSE_FORMAT_COO_AOS = 4,      ///< Coordinate (COO) - Array of Structures
+    MCSPARSE_FORMAT_BLOCKED_ELL = 5,  ///< Blocked ELL
+} mcsparseFormat_t;
+
+typedef enum {
+    MCSPARSE_ORDER_COL = 1,  ///< Column-Major Order - Dense matrix memory layout
+    MCSPARSE_ORDER_ROW = 2   ///< Row-Major Order - Dense matrix memory layout
+} mcsparseOrder_t;
+
+typedef enum {
+    MCSPARSE_INDEX_16U = 1,  ///< 16-bit unsigned integer for matrix/vector indices
+    MCSPARSE_INDEX_32I = 2,  ///< 32-bit signed integer for matrix/vector indices
+    MCSPARSE_INDEX_64I = 3,  ///< 64-bit signed integer for matrix/vector indices
+} mcsparseIndexType_t;
+
+typedef enum { MCSPARSE_SPMAT_FILL_MODE, MCSPARSE_SPMAT_DIAG_TYPE } mcsparseSpMatAttribute_t;
+
+typedef enum { MCSPARSE_SPARSETODENSE_ALG_DEFAULT = 0 } mcsparseSparseToDenseAlg_t;
+
+typedef enum { MCSPARSE_DENSETOSPARSE_ALG_DEFAULT = 0 } mcsparseDenseToSparseAlg_t;
+
+typedef enum {
+    MCSPARSE_MV_ALG_DEFAULT = 0,
+    MCSPARSE_COOMV_ALG = 1,
+    MCSPARSE_CSRMV_ALG1 = 2,
+    MCSPARSE_CSRMV_ALG2 = 3,
+    MCSPARSE_SPMV_ALG_DEFAULT = 0,
+    MCSPARSE_SPMV_CSR_ALG1 = 2,
+    MCSPARSE_SPMV_CSR_ALG2 = 3,
+    MCSPARSE_SPMV_COO_ALG1 = 1,
+    MCSPARSE_SPMV_COO_ALG2 = 4,
+} mcsparseSpMVAlg_t;
+
+typedef enum {
+    MCSPARSE_SPSV_ALG_DEFAULT = 0,
+} mcsparseSpSVAlg_t;
+
+typedef enum {
+    MCSPARSE_MM_ALG_DEFAULT = 0,
+    MCSPARSE_COOMM_ALG1 = 1,
+    MCSPARSE_COOMM_ALG2 = 2,
+    MCSPARSE_COOMM_ALG3 = 3,
+    MCSPARSE_CSRMM_ALG1 = 4,
+    MCSPARSE_SPMM_ALG_DEFAULT = 0,
+    MCSPARSE_SPMM_COO_ALG1 = 1,
+    MCSPARSE_SPMM_COO_ALG2 = 2,
+    MCSPARSE_SPMM_COO_ALG3 = 3,
+    MCSPARSE_SPMM_COO_ALG4 = 5,
+    MCSPARSE_SPMM_CSR_ALG1 = 4,
+    MCSPARSE_SPMM_CSR_ALG2 = 6,
+    MCSPARSE_SPMM_CSR_ALG3 = 12,
+    MCSPARSE_SPMM_BLOCKED_ELL_ALG1 = 13
+} mcsparseSpMMAlg_t;
+
+typedef enum {
+    MCSPARSE_SPGEMM_DEFAULT = 0,
+    MCSPARSE_SPGEMM_CSR_ALG_DETERMINITIC = 1,
+    MCSPARSE_SPGEMM_CSR_ALG_NONDETERMINITIC = 2
+} mcsparseSpGEMMAlg_t;
+
+typedef enum { MCSPARSE_SDDMM_ALG_DEFAULT = 0 } mcsparseSDDMMAlg_t;
+
+typedef enum { MCSPARSE_SPMM_OP_ALG_DEFAULT = 0 } mcsparseSpMMOpAlg_t;
+
+typedef enum {
+    MCSPARSE_CSR2CSC_ALG1 = 1,  // faster than V2 (in general), deterministc
+    MCSPARSE_CSR2CSC_ALG2 = 2   // low memory requirement, non-deterministc
+} mcsparseCsr2CscAlg_t;
+
+typedef enum {
+    MCSPARSE_SPSM_ALG_DEFAULT = 0,
+} mcsparseSpSMAlg_t;
+
+typedef enum {
+    MCSPARSE_GTSV_INTERLEAVED_ALG_QR = 0,       // QR algorithm
+    MCSPARSE_GTSV_INTERLEAVED_ALG_THOMAS = 1,   // thomas algorithm
+    MCSPARSE_GTSV_INTERLEAVED_ALG_LU = 2,        // LU algorithm
+    MCSPARSE_GTSV_INTERLEAVED_ALG_DEFAULT = 3  // Default gtsv algorithm.
+} mcsparseGtsvInterleavedAlg_t;
+
+typedef enum {
+    MCSPARSE_GPSV_INTERLEAVED_ALG_DEFAULT = 0,  // Default gpsv algorithm.
+    MCSPARSE_GPSV_INTERLEAVED_ALG_QR = 1,       // QR algorithm
+    MCSPARSE_GPSV_INTERLEAVED_ALG_THOMAS = 2,   // thomas algorithm
+    MCSPARSE_GPSV_INTERLEAVED_ALG_LU = 3        // LU algorithm
+} mcsparseGpsvInterleavedAlg_t;
+
+struct mcsparseContext;
+typedef struct mcsparseContext* mcsparseHandle_t;
+
+struct mcsparseMatDescr;
+typedef struct mcsparseMatDescr* mcsparseMatDescr_t;
+
+struct mcsparseCsrsv2Info;
+typedef struct mcsparseCsrsv2Info* mcsparseCsrsv2Info_t;
+
+struct mcsparseCsrsm2Info;
+typedef struct mcsparseCsrsm2Info* mcsparseCsrsm2Info_t;
+
+struct mcsparseBsrsv2Info;
+typedef struct mcsparseBsrsv2Info* mcsparseBsrsv2Info_t;
+
+struct mcsparseBsrsm2Info;
+typedef struct mcsparseBsrsm2Info* mcsparseBsrsm2Info_t;
+
+struct mcsparseCsric02Info;
+typedef struct mcsparseCsric02Info* mcsparseCsric02Info_t;
+
+struct mcsparseBsric02Info;
+typedef struct mcsparseBsric02Info* mcsparseBsric02Info_t;
+
+struct mcsparseCsrilu02Info;
+typedef struct mcsparseCsrilu02Info* mcsparseCsrilu02Info_t;
+
+struct mcsparseBsrilu02Info;
+typedef struct mcsparseBsrilu02Info* mcsparseBsrilu02Info_t;
+
+struct mcsparseCsrgemm2Info;
+typedef struct mcsparseCsrgemm2Info* mcsparseCsrgemm2Info_t;
+
+struct mcsparseCsru2csrInfo;
+typedef struct mcsparseCsru2csrInfo* mcsparseCsru2csrInfo_t;
+
+struct mcsparseColorInfo;
+typedef struct mcsparseColorInfo* mcsparseColorInfo_t;
+
+struct mcsparsePruneInfo;
+typedef struct mcsparsePruneInfo* mcsparsePruneInfo_t;
+
+struct mcsparseSpVecDescr;
+typedef struct mcsparseSpVecDescr* mcsparseSpVecDescr_t;
+
+struct mcsparseDnVecDescr;
+typedef struct mcsparseDnVecDescr* mcsparseDnVecDescr_t;
+
+struct mcsparseSpMatDescr;
+typedef struct mcsparseSpMatDescr* mcsparseSpMatDescr_t;
+
+struct mcsparseDnMatDescr;
+typedef struct mcsparseDnMatDescr* mcsparseDnMatDescr_t;
+
+struct mcsparseSpSVDescr;
+typedef struct mcsparseSpSVDescr* mcsparseSpSVDescr_t;
+
+struct mcsparseSpMMOpPlan;
+typedef struct mcsparseSpMMOpPlan* mcsparseSpMMOpPlan_t;
+
+struct mcsparseSpGEMMDescr;
+typedef struct mcsparseSpGEMMDescr* mcsparseSpGEMMDescr_t;
+
+struct mcsparseSpSMDescr;
+typedef struct mcsparseSpSMDescr* mcsparseSpSMDescr_t;
+
+#endif
